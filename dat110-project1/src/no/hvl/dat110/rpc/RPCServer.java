@@ -13,12 +13,12 @@ public class RPCServer {
 	private Connection connection;
 	
 	// hashmap to register RPC methods which are required to extend RPCRemoteImpl	
-	private HashMap<Byte,RPCRemoteImpl> services;
+	private HashMap<Byte, RPCRemoteImpl> services;
 	
 	public RPCServer(int port) {
 		
 		this.msgserver = new MessagingServer(port);
-		this.services = new HashMap<Byte,RPCRemoteImpl>();
+		this.services = new HashMap<Byte, RPCRemoteImpl>();
 		
 	}
 	
@@ -36,25 +36,34 @@ public class RPCServer {
 		boolean stop = false;
 		
 		while (!stop) {
-	    
-		   byte rpcid = 0;
-		   Message requestmsg,replymsg;
-		   
-		   // TODO - START
-		   // - receive Message containing RPC request
-		   // - find the identifier for the RPC method to invoke
-		   // - lookup the method to be invoked
-		   // - invoke the method
-		   // - send back message containing RPC reply
-			
-		   if (true)
-				throw new UnsupportedOperationException(TODO.method());
-		   
-		   // TODO - END
-		   
-		   if (rpcid == RPCCommon.RPIDSTOP) {
-			   stop = true;
-		   }
+
+			byte rpcid = 0;
+			Message requestmsg, replymsg;
+
+			// TODO - START
+			// - receive Message containing RPC request
+			requestmsg = connection.receive();
+
+			// - find the identifier for the RPC method to invoke
+			byte[] requestdata = requestmsg.getData();
+			rpcid = requestdata[0];
+
+			// - lookup the method to be invoked
+			RPCRemoteImpl method = services.get(rpcid);
+
+			// - invoke the method
+			byte[] params = RPCUtils.decapsulate(requestdata);
+			byte[] returndata = method.invoke(params);
+
+			// - send back message containing RPC reply
+			replymsg = new Message(returndata);
+			connection.send(replymsg);
+
+			// TODO - END
+
+			if (rpcid == RPCCommon.RPIDSTOP) {
+				stop = true;
+			}
 		}
 	
 	}

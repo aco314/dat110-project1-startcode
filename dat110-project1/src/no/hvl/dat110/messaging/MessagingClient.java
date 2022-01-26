@@ -4,6 +4,7 @@ package no.hvl.dat110.messaging;
 import java.io.IOException;
 
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import no.hvl.dat110.TODO;
 
@@ -26,8 +27,14 @@ public class MessagingClient {
 		// TODO - START
 		// create TCP socket for client and connection
 		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+		try {
+			clientSocket = new Socket(server, port);
+			connection = new Connection(clientSocket);
+			
+		} catch (IOException e) {
+			System.out.println("TCP client: " + e.getMessage());
+			e.printStackTrace();
+		} 
 		
 		// TODO - END
 		return connection;

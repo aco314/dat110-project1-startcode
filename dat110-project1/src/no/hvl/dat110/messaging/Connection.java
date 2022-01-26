@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import javax.swing.text.Segment;
+
 import no.hvl.dat110.TODO;
 
 
@@ -39,9 +41,15 @@ public class Connection {
 		// TODO - START
 		// encapsulate the data contained in the message and write to the output stream
 		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+		data = MessageUtils.encapsulate(message);
+		
+		try {
+			outStream.write(data);
 			
+		} catch (IOException e) {
+			System.out.println("TCP sender error: " + e.getMessage());
+			e.printStackTrace();
+		}
 		// TODO - END
 
 	}
@@ -49,13 +57,19 @@ public class Connection {
 	public Message receive() {
 
 		Message message = null;
-		byte[] data;
+		byte[] data = new  byte[MessageConfig.SEGMENTSIZE];
 		
 		// TODO - START
 		// read a segment from the input stream and decapsulate into message
 		
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+		try {
+			inStream.read(data);
+			message = MessageUtils.decapsulate(data);
+			
+		} catch (IOException e) {
+			System.out.println("TCP receiver error: " + e.getMessage());
+			e.printStackTrace();
+		}
 		
 		// TODO - END
 		

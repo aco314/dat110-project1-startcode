@@ -13,7 +13,7 @@ public class Controller  {
 		DisplayStub display;
 		SensorStub sensor;
 		
-		RPCClient displayclient,sensorclient;
+		RPCClient displayclient, sensorclient;
 		
 		System.out.println("Controller starting ...");
 				
@@ -28,10 +28,23 @@ public class Controller  {
 		// TODO - START
 		
 		// create local display and sensor stub objects
+		display = new DisplayStub(displayclient);
+		sensor = new SensorStub(sensorclient);
+		
 		// connect to sensor and display RPC servers
+		displayclient.connect();
+		sensorclient.connect();
+		
+		for (int i = 0; i < N; i++) {
 			
-		if (true)
-			throw new UnsupportedOperationException(TODO.method());
+			int temp = sensor.read();
+			display.write(Integer.toString(temp));
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		// TODO - END
 		
